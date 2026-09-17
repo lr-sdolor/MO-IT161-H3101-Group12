@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account | Shawarmhug</title>
+  <link rel="stylesheet" href="Css/style.css">
+  <link rel="stylesheet" href="Css/general.css">
+  <link rel="stylesheet" href="Css/pages.css">
+</head>
+<body>
+  <!--Contains logo and navagation-->
+  <header class="navbar">
+    <nav>
+    <div class="logo">
+    <img src="images/logo.png" alt="Shawarmhug logo">
+    <h1>ShawarmHug</h1>
+    </div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="cart.html">Cart <span class="cart-badge" id="cart-badge">0</span></a></li>
+      </ul>
+      <div class="btns">
+
+        <a href="account.html" class="btn active-link" id="nav-account-link">Sign In</a>
+
+      </div>
+
+    </nav>
+  </header>
+
+  <main>
+    <!--Guest view: sign up / log in tabs-->
+    <section id="auth-section">
+      <h2 class="title">My Account</h2>
+
+      <div class="auth-tabs" role="tablist">
+        <button class="tab-btn active" id="tab-login-btn" data-tab="login">Log In</button>
+        <button class="tab-btn" id="tab-signup-btn" data-tab="signup">Sign Up</button>
+      </div>
+
+      <form id="login-form" class="auth-form">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" name="loginEmail" required>
+        <span class="field-error" id="err-login-email"></span>
+
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" name="loginPassword" required>
+        <span class="field-error" id="err-login-password"></span>
+
+        <p class="form-msg" id="login-msg"></p>
+        <button type="submit" class="btn-primary">Log In</button>
+      </form>
+
+      <form id="signup-form" class="auth-form" hidden>
+        <label for="signup-name">Full Name</label>
+        <input type="text" id="signup-name" name="signupName" required>
+        <span class="field-error" id="err-signup-name"></span>
+
+        <label for="signup-email">Email</label>
+        <input type="email" id="signup-email" name="signupEmail" required>
+        <span class="field-error" id="err-signup-email"></span>
+
+        <label for="signup-phone">Contact Number</label>
+        <input type="tel" id="signup-phone" name="signupPhone">
+
+        <label for="signup-password">Password</label>
+        <input type="password" id="signup-password" name="signupPassword" required minlength="6">
+        <span class="field-error" id="err-signup-password"></span>
+
+        <p class="form-msg" id="signup-msg"></p>
+        <button type="submit" class="btn-primary">Create Account</button>
+      </form>
+    </section>
+
+    <!--Logged-in view: profile and order history-->
+    <section id="profile-section" hidden>
+      <h2 class="title">Welcome back, <span id="profile-name"></span>!</h2>
+
+      <div class="profile-card">
+        <h3>Profile</h3>
+        <p><strong>Name:</strong> <span id="profile-full-name"></span></p>
+        <p><strong>Email:</strong> <span id="profile-email"></span></p>
+        <p><strong>Contact Number:</strong> <span id="profile-phone"></span></p>
+        <button id="logout-btn" class="btn">Log Out</button>
+      </div>
+
+      <div class="order-history">
+        <h3>Order History</h3>
+        <div id="order-history-empty" class="empty-state" hidden>
+          <p>No orders yet — your future orders will show up here.</p>
+        </div>
+        <ul id="order-history-list" class="order-history-list"></ul>
+      </div>
+    </section>
+  </main>
+
+  <!--Footer Section: Copyright info and contact info-->
+  <footer>
+    <p>Contact us: shawarmhug@gmail.com</p>
+
+    <p>&copy; 2026 BLESSY Shawarmhug PH</p>
+  </footer>
+
+  <script src="js/cart-store.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/account.js"></script>
+</body>
+</html>
