@@ -3,28 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shawarmhug</title>
+  <title>Menu | Shawarmhug</title>
   <link rel="stylesheet" href="Css/style.css">
   <link rel="stylesheet" href="Css/general.css">
+  <link rel="stylesheet" href="Css/pages.css">
 </head>
 <body>
   <!--Contains logo and navagation-->
   <header class="navbar">
     <nav>
     <div class="logo">
-    <img src="pictures/logo.png" alt="Shawarmhug logo">
+    <img src="images/logo.png" alt="Shawarmhug logo">
     <h1>ShawarmHug</h1>
     </div>
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
-        <li><a href="menu.html">Menu</a></li>
+        <li><a href="menu.html" class="active-link">Menu</a></li>
         <li><a href="about.html">About</a></li>
-        <li><a href="cart.html">Cart</a></li>
+        <li><a href="cart.html">Cart <span class="cart-badge" id="cart-badge">0</span></a></li>
       </ul>
       <div class="btns">
 
-        <button class="btn">sign in</button>
-        <button class="btn">sign up</button>
+        <a href="account.html" class="btn" id="nav-account-link">Sign In</a>
 
       </div>
 
@@ -36,38 +36,68 @@
     <section id="menu">
       <h2 class="title">Blessed Menu</h2>
 
+      <!--Category filter: lets shoppers narrow the dish grid by type-->
+      <div class="category-filters" role="group" aria-label="Filter menu by category">
+        <button class="filter-btn active" data-category="all">All</button>
+        <button class="filter-btn" data-category="shawarma">Shawarma</button>
+        <button class="filter-btn" data-category="rice">Rice Meals</button>
+        <button class="filter-btn" data-category="appetizers">Appetizers</button>
+      </div>
+
       <div class="dishes">
 
-        <div>
-          <img src="Pictures/Signature Beef  Chicken Shawarma Wrap.png" 
+        <div class="dish-card" data-category="shawarma">
+          <img src="images/Signature Beef  Chicken Shawarma Wrap.png"
           alt="Signature Beef or Chicken Shawarma Wrap">
           <h3>Signature Beef or Chicken Shawarma Wrap</h3>
           <ul>
-            <li>Thinly sliced, spiced beef or 
-              tender chicken wrapped in a warm pita bread, 
-              stuffed with fresh cabbage, onions, and 
+            <li>Thinly sliced, spiced beef or
+              tender chicken wrapped in a warm pita bread,
+              stuffed with fresh cabbage, onions, and
               topped with signature white garlic sauce.</li>
             <li>Sizes: Regular | Large | Multi-Pack (Buy 2 / Buy 3) </li>
             <li>Pricing: ₱85 (Regular) | ₱120 (Large) | ₱160 (Buy 2) | ₱235 (Buy 3)</li>
           </ul>
-          <button>Add to Cart</button>
+          <div class="dish-options">
+            <label for="wrap-size">Size</label>
+            <select id="wrap-size" class="size-select">
+              <option value="85">Regular - ₱85</option>
+              <option value="120">Large - ₱120</option>
+              <option value="160">Buy 2 - ₱160</option>
+              <option value="235">Buy 3 - ₱235</option>
+            </select>
+            <label for="wrap-qty">Qty</label>
+            <input type="number" id="wrap-qty" class="qty-input" value="1" min="1" max="20">
+          </div>
+          <button class="add-to-cart-btn" data-name="Signature Beef or Chicken Shawarma Wrap"
+            data-size-select="wrap-size" data-qty-input="wrap-qty">Add to Cart</button>
         </div>
 
-        <div>
-          <img src="Pictures/Beef or Chicken Shawarma Rice.webp" 
+        <div class="dish-card" data-category="rice">
+          <img src="images/Beef or Chicken Shawarma Rice.webp"
           alt="Beef or Chicken Shawarma Rice">
           <h3>Signature Beef or Chicken Shawarma Rice</h3>
           <ul>
-            <li>Savory chicken or beef shawarma served over steamed white 
+            <li>Savory chicken or beef shawarma served over steamed white
               rice or garlic butter rice, finished with house garlic and chili sauces.</li>
             <li>Sizes / Options: Regular Rice | Flavored Garlic Butter Rice</li>
             <li>Pricing: ₱99 (Regular Rice) | ₱115 (Garlic Butter Rice)</li>
           </ul>
-          <button>Add to Cart</button>
+          <div class="dish-options">
+            <label for="rice-size">Option</label>
+            <select id="rice-size" class="size-select">
+              <option value="99">Regular Rice - ₱99</option>
+              <option value="115">Garlic Butter Rice - ₱115</option>
+            </select>
+            <label for="rice-qty">Qty</label>
+            <input type="number" id="rice-qty" class="qty-input" value="1" min="1" max="20">
+          </div>
+          <button class="add-to-cart-btn" data-name="Signature Beef or Chicken Shawarma Rice"
+            data-size-select="rice-size" data-qty-input="rice-qty">Add to Cart</button>
         </div>
-        
-        <div>
-          <img src="Pictures/Shawarma Nachos (Beef or Chicken).jpg" 
+
+        <div class="dish-card" data-category="appetizers">
+          <img src="images/Shawarma Nachos (Beef or Chicken).jpg"
           alt="Shawarma Nachos (Beef or Chicken)">
           <h3>Shawarma Nachos (Beef or Chicken)</h3>
           <ul>
@@ -75,10 +105,22 @@
             <li>Sizes: Personal | Party Tray</li>
             <li>Pricing: ₱140 (Personal) | ₱380 (Party Tray)</li>
           </ul>
-          <button>Add to Cart</button>
+          <div class="dish-options">
+            <label for="nachos-size">Size</label>
+            <select id="nachos-size" class="size-select">
+              <option value="140">Personal - ₱140</option>
+              <option value="380">Party Tray - ₱380</option>
+            </select>
+            <label for="nachos-qty">Qty</label>
+            <input type="number" id="nachos-qty" class="qty-input" value="1" min="1" max="20">
+          </div>
+          <button class="add-to-cart-btn" data-name="Shawarma Nachos (Beef or Chicken)"
+            data-size-select="nachos-size" data-qty-input="nachos-qty">Add to Cart</button>
         </div>
 
       </div>
+
+      <p class="no-results-msg" id="no-results-msg" hidden>No dishes in this category yet — check back soon!</p>
     </section>
 
     <!--Highlight Special Discount and offers-->
@@ -99,5 +141,9 @@
 
     <p>&copy; 2026 BLESSY Shawarmhug PH</p>
   </footer>
+
+  <script src="js/cart-store.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/menu.js"></script>
 </body>
 </html>
