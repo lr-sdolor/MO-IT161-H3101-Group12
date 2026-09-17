@@ -3,28 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shawarmhug</title>
+  <title>About | Shawarmhug</title>
   <link rel="stylesheet" href="Css/style.css">
   <link rel="stylesheet" href="Css/general.css">
+  <link rel="stylesheet" href="Css/pages.css">
 </head>
 <body>
   <!--Contains logo and navagation-->
   <header class="navbar">
     <nav>
     <div class="logo">
-    <img src="pictures/logo.png" alt="Shawarmhug logo">
+    <img src="images/logo.png" alt="Shawarmhug logo">
     <h1>ShawarmHug</h1>
     </div>
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="menu.html">Menu</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="cart.html">Cart</a></li>
+        <li><a href="about.html" class="active-link">About</a></li>
+        <li><a href="cart.html">Cart <span class="cart-badge" id="cart-badge">0</span></a></li>
       </ul>
       <div class="btns">
 
-        <button class="btn">sign in</button>
-        <button class="btn">sign up</button>
+        <a href="account.html" class="btn" id="nav-account-link">Sign In</a>
 
       </div>
 
@@ -37,19 +37,17 @@
       <div class="about-card">
         <h2>Welcome to Blessy: Shawarmhug</h2>
         <p>
-          Born in the kitchen of Nanay Blessy in 1999, Shawarmhug brings you freshly prepared shawarma wraps, 
-          savory rice meals, and sides crafted from timeless recipes and premium ingredients. Taste the tradition 
+          Born in the kitchen of Nanay Blessy in 1999, Shawarmhug brings you freshly prepared shawarma wraps,
+          savory rice meals, and sides crafted from timeless recipes and premium ingredients. Taste the tradition
           and satisfy your cravings today!
         </p>
-      </div>
-    </section>
       </div>
     </section>
 
  <!--Essential store details-->
     <section id="location">
       <h2>Visit Us</h2>
-      <div>
+      <div class="location-grid">
         <div>
           <h3>Location</h3>
           <p>150 Maginhawa St., Sikatuna Village, Diliman, Quezon City, 1101 Metro Manila </p>
@@ -76,5 +74,8 @@
 
     <p>&copy; 2026 BLESSY Shawarmhug PH</p>
   </footer>
+
+  <script src="js/cart-store.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

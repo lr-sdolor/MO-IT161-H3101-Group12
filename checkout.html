@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout | Shawarmhug</title>
+  <link rel="stylesheet" href="Css/style.css">
+  <link rel="stylesheet" href="Css/general.css">
+  <link rel="stylesheet" href="Css/pages.css">
+</head>
+<body>
+  <!--Contains logo and navagation-->
+  <header class="navbar">
+    <nav>
+    <div class="logo">
+    <img src="images/logo.png" alt="Shawarmhug logo">
+    <h1>ShawarmHug</h1>
+    </div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="cart.html">Cart <span class="cart-badge" id="cart-badge">0</span></a></li>
+      </ul>
+      <div class="btns">
+
+        <a href="account.html" class="btn" id="nav-account-link">Sign In</a>
+
+      </div>
+
+    </nav>
+  </header>
+
+  <main>
+    <section id="checkout-section">
+      <h2 class="title">Checkout</h2>
+
+      <div id="checkout-empty-msg" class="empty-state" hidden>
+        <p>Your cart is empty, so there's nothing to check out yet.</p>
+        <a href="menu.html" class="btn-primary">Browse the Menu</a>
+      </div>
+
+      <form id="checkout-form" class="checkout-layout" novalidate>
+
+        <div class="checkout-fields">
+
+          <!--Customer information-->
+          <fieldset>
+            <legend>Customer Information</legend>
+
+            <label for="cust-name">Full Name</label>
+            <input type="text" id="cust-name" name="custName" required>
+            <span class="field-error" id="err-cust-name"></span>
+
+            <label for="cust-phone">Contact Number</label>
+            <input type="tel" id="cust-phone" name="custPhone" placeholder="09XX XXX XXXX" required>
+            <span class="field-error" id="err-cust-phone"></span>
+
+            <label for="cust-email">Email</label>
+            <input type="email" id="cust-email" name="custEmail" required>
+            <span class="field-error" id="err-cust-email"></span>
+          </fieldset>
+
+          <!--Order type: delivery or pickup-->
+          <fieldset>
+            <legend>Order Type</legend>
+            <div class="radio-group">
+              <label><input type="radio" name="orderType" value="Delivery" id="type-delivery" checked> Delivery</label>
+              <label><input type="radio" name="orderType" value="Pickup" id="type-pickup"> Pickup</label>
+            </div>
+          </fieldset>
+
+          <!--Delivery details: shown only when Delivery is selected-->
+          <fieldset id="delivery-details">
+            <legend>Delivery Details</legend>
+            <label for="cust-address">Delivery Address</label>
+            <textarea id="cust-address" name="custAddress" rows="3"></textarea>
+            <span class="field-error" id="err-cust-address"></span>
+          </fieldset>
+
+          <!--Pickup details: shown only when Pickup is selected-->
+          <fieldset id="pickup-details" hidden>
+            <legend>Pickup Location</legend>
+            <p>150 Maginhawa St., Sikatuna Village, Diliman, Quezon City, 1101 Metro Manila</p>
+            <p>Orders are ready for pickup approximately 20–30 minutes after placing your order.</p>
+          </fieldset>
+
+          <!--Payment method-->
+          <fieldset>
+            <legend>Payment Method</legend>
+            <div class="radio-group">
+              <label><input type="radio" name="paymentMethod" value="COD" id="pay-cod" checked> Cash on Delivery</label>
+              <label><input type="radio" name="paymentMethod" value="Online" id="pay-online"> Online Payment</label>
+            </div>
+            <span class="field-error" id="err-payment"></span>
+          </fieldset>
+
+        </div>
+
+        <!--Order summary: read-only recap of the cart-->
+        <aside class="order-summary">
+          <h3>Order Summary</h3>
+          <ul id="checkout-items-list" class="checkout-items-list"></ul>
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="checkout-subtotal">₱0.00</span>
+          </div>
+          <div class="summary-row">
+            <span>Delivery Fee</span>
+            <span id="checkout-delivery">₱0.00</span>
+          </div>
+          <div class="summary-row summary-total">
+            <span>Total</span>
+            <span id="checkout-total">₱0.00</span>
+          </div>
+          <button type="submit" class="btn-primary" id="place-order-btn">Place Order</button>
+        </aside>
+
+      </form>
+    </section>
+  </main>
+
+  <!--Footer Section: Copyright info and contact info-->
+  <footer>
+    <p>Contact us: shawarmhug@gmail.com</p>
+
+    <p>&copy; 2026 BLESSY Shawarmhug PH</p>
+  </footer>
+
+  <script src="js/cart-store.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>

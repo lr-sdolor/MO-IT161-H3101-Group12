@@ -3,28 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shawarmhug</title>
+  <title>Your Cart | Shawarmhug</title>
   <link rel="stylesheet" href="Css/style.css">
   <link rel="stylesheet" href="Css/general.css">
+  <link rel="stylesheet" href="Css/pages.css">
 </head>
 <body>
   <!--Contains logo and navagation-->
   <header class="navbar">
     <nav>
     <div class="logo">
-    <img src="pictures/logo.png" alt="Shawarmhug logo">
+    <img src="images/logo.png" alt="Shawarmhug logo">
     <h1>ShawarmHug</h1>
     </div>
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="menu.html">Menu</a></li>
         <li><a href="about.html">About</a></li>
-        <li><a href="cart.html">Cart</a></li>
+        <li><a href="cart.html" class="active-link">Cart <span class="cart-badge" id="cart-badge">0</span></a></li>
       </ul>
       <div class="btns">
 
-        <button class="btn">sign in</button>
-        <button class="btn">sign up</button>
+        <a href="account.html" class="btn" id="nav-account-link">Sign In</a>
 
       </div>
 
@@ -32,74 +32,46 @@
   </header>
 
   <main>
-  <!--Landing page visual banner to catch customer attention-->
-    <section class="banner">
-      <div class="banner-content">
-        <h2>A Warm Hug in Every Wrap</h2>
-        <p>
-          Comfort food you can hold as you experience the rich taste of expertly spiced meats 
-          and fresh ingredients, wrapped with love and blessed with flavors.
-        </p>
-        <a href="#menu" class="btn-primary">Order Now</a>
+    <!--Cart review: items, quantities, subtotal, delivery fee, total-->
+    <section id="cart-section">
+      <h2 class="title">Your Cart</h2>
+
+      <div id="cart-empty-msg" class="empty-state" hidden>
+        <p>Your cart is empty. Time to grab a wrap!</p>
+        <a href="menu.html" class="btn-primary">Browse the Menu</a>
       </div>
-    </section>
 
-    <!--Display Menu Items-->
-    <section id="menu">
-      <h2 class="title">Blessed Menu</h2>
+      <table id="cart-table" class="cart-table" hidden>
+        <thead>
+          <tr>
+            <th scope="col">Item</th>
+            <th scope="col">Option</th>
+            <th scope="col">Unit Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Line Total</th>
+            <th scope="col"><span class="sr-only">Remove</span></th>
+          </tr>
+        </thead>
+        <tbody id="cart-items-body">
+          <!--Cart line items are rendered here by js/cart.js-->
+        </tbody>
+      </table>
 
-      <div class="dishes">
-
-        <div>
-          <img src="Pictures/Signature Beef  Chicken Shawarma Wrap.png" 
-          alt="Signature Beef or Chicken Shawarma Wrap">
-          <h3>Signature Beef or Chicken Shawarma Wrap</h3>
-          <ul>
-            <li>Thinly sliced, spiced beef or 
-              tender chicken wrapped in a warm pita bread, 
-              stuffed with fresh cabbage, onions, and 
-              topped with signature white garlic sauce.</li>
-            <li>Sizes: Regular | Large | Multi-Pack (Buy 2 / Buy 3) </li>
-            <li>Pricing: ₱85 (Regular) | ₱120 (Large) | ₱160 (Buy 2) | ₱235 (Buy 3)</li>
-          </ul>
-          <button>Add to Cart</button>
+      <div id="cart-summary" class="cart-summary" hidden>
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span id="summary-subtotal">₱0.00</span>
         </div>
-
-        <div>
-          <img src="Pictures/Beef or Chicken Shawarma Rice.webp" 
-          alt="Beef or Chicken Shawarma Rice">
-          <h3>Signature Beef or Chicken Shawarma Rice</h3>
-          <ul>
-            <li>Savory chicken or beef shawarma served over steamed white 
-              rice or garlic butter rice, finished with house garlic and chili sauces.</li>
-            <li>Sizes / Options: Regular Rice | Flavored Garlic Butter Rice</li>
-            <li>Pricing: ₱99 (Regular Rice) | ₱115 (Garlic Butter Rice)</li>
-          </ul>
-          <button>Add to Cart</button>
+        <div class="summary-row">
+          <span>Delivery Fee</span>
+          <span id="summary-delivery">₱0.00</span>
         </div>
-        
-        <div>
-          <img src="Pictures/Shawarma Nachos (Beef or Chicken).jpg" 
-          alt="Shawarma Nachos (Beef or Chicken)">
-          <h3>Shawarma Nachos (Beef or Chicken)</h3>
-          <ul>
-            <li>Crispy corn tortilla chips loaded with beef or chicken shawarma, smothered in melted cheese, white garlic, and chili sauce.</li>
-            <li>Sizes: Personal | Party Tray</li>
-            <li>Pricing: ₱140 (Personal) | ₱380 (Party Tray)</li>
-          </ul>
-          <button>Add to Cart</button>
+        <div class="summary-row summary-total">
+          <span>Total</span>
+          <span id="summary-total">₱0.00</span>
         </div>
-
-      </div>
-    </section>
-
-    <!--Highlight Special Discount and offers-->
-    <section id="deals">
-      <div>
-        <h2>Current Promotions & Deals</h2>
-        <p>
-          Get a free drink with every Large Shawarma Combo purchase every Tuesday!
-        </p>
+        <button id="clear-cart-btn" class="btn">Clear Cart</button>
+        <a href="checkout.html" id="checkout-btn" class="btn-primary">Proceed to Checkout</a>
       </div>
     </section>
 
@@ -111,5 +83,9 @@
 
     <p>&copy; 2026 BLESSY Shawarmhug PH</p>
   </footer>
+
+  <script src="js/cart-store.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
 </body>
 </html>

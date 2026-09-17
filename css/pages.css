@@ -1,0 +1,430 @@
+/* ---------- shared bits ---------- */
+
+.btn-primary {
+  display: inline-block;
+  padding: 0.6rem 1.6rem;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1rem;
+  background-color: #BC2525;
+  color: #ece6d8;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #E3B23C;
+  color: #4A3525;
+}
+
+.active-link {
+  color: #E3B23C !important;
+}
+
+.cart-badge {
+  display: inline-block;
+  min-width: 1.2rem;
+  padding: 0 0.35rem;
+  margin-left: 0.25rem;
+  border-radius: 999px;
+  background: #BC2525;
+  color: #fff;
+  font-size: 0.75rem;
+  line-height: 1.2rem;
+  text-align: center;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* ---------- dish options (index.html / menu.html) ---------- */
+
+.dishes > .dish-card {
+  border: 1px solid rgba(227, 178, 60, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dish-card img {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.dish-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.dish-options label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.size-select,
+.qty-input {
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(74, 53, 37, 0.3);
+  font-family: inherit;
+}
+
+.qty-input {
+  width: 4rem;
+}
+
+.dish-card .add-to-cart-btn {
+  display: block;
+  margin: 0 auto;
+  padding: 0.5rem 1.5rem;
+  border-radius: 30px;
+  font-weight: 600;
+  background-color: #ece6d8;
+  color: #4A3525;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.dish-card .add-to-cart-btn:hover {
+  background: #E3B23C;
+}
+
+.dish-card .add-to-cart-btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* ---------- category filters (menu.html) ---------- */
+
+.category-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-btn {
+  padding: 0.4rem 1.1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(74, 53, 37, 0.3);
+  background: transparent;
+  color: #4A3525;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+  background: #E3B23C;
+  border-color: #E3B23C;
+}
+
+.no-results-msg {
+  text-align: center;
+}
+
+/* ---------- cart table (cart.html) ---------- */
+
+.cart-table {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 1.5rem auto;
+  border-collapse: collapse;
+}
+
+.cart-table th,
+.cart-table td {
+  padding: 0.6rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(74, 53, 37, 0.15);
+}
+
+.cart-qty-input {
+  width: 3.5rem;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: #BC2525;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.cart-summary {
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+}
+
+.summary-total {
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-top: 1px solid rgba(74, 53, 37, 0.2);
+  margin-top: 0.35rem;
+  padding-top: 0.5rem;
+}
+
+.cart-summary .btn,
+.cart-summary .btn-primary {
+  width: 100%;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+/* ---------- checkout (checkout.html) ---------- */
+
+#checkout-section {
+  max-width: 1000px;
+}
+
+.checkout-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.checkout-fields {
+  flex: 1 1 320px;
+}
+
+.checkout-fields fieldset {
+  border: 1px solid rgba(74, 53, 37, 0.2);
+  border-radius: 8px;
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+}
+
+.checkout-fields legend {
+  font-weight: 700;
+  padding: 0 0.5rem;
+}
+
+.checkout-fields label {
+  display: block;
+  font-weight: 600;
+  margin-top: 0.6rem;
+  margin-bottom: 0.2rem;
+  text-align: left;
+}
+
+.checkout-fields input[type="text"],
+.checkout-fields input[type="tel"],
+.checkout-fields input[type="email"],
+.checkout-fields textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(74, 53, 37, 0.3);
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.radio-group {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 500;
+}
+
+.field-error {
+  display: block;
+  color: #BC2525;
+  font-size: 0.85rem;
+  min-height: 1.1em;
+  text-align: left;
+}
+
+.order-summary {
+  flex: 0 1 320px;
+  border: 1px solid rgba(74, 53, 37, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  position: sticky;
+  top: 1rem;
+}
+
+.order-summary h3 {
+  text-align: center;
+  margin-top: 0;
+}
+
+.checkout-items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem 0;
+}
+
+.checkout-items-list li {
+  text-align: left;
+  padding: 0.25rem 0;
+  border-bottom: 1px dashed rgba(74, 53, 37, 0.15);
+}
+
+#place-order-btn {
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+/* ---------- confirmation (confirmation.html) ---------- */
+
+.confirmation-card {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.confirmation-icon {
+  width: 3rem;
+  height: 3rem;
+  line-height: 3rem;
+  border-radius: 50%;
+  background: #4A7C3B;
+  color: #fff;
+  font-size: 1.5rem;
+  margin: 0 auto 1rem auto;
+}
+
+.confirmation-details {
+  text-align: left;
+  margin: 1rem 0;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(74, 53, 37, 0.1);
+}
+
+/* ---------- account (account.html) ---------- */
+
+.auth-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.tab-btn {
+  padding: 0.5rem 1.5rem;
+  border-radius: 20px 20px 0 0;
+  border: none;
+  background: transparent;
+  font-weight: 600;
+  cursor: pointer;
+  color: #4A3525;
+}
+
+.tab-btn.active {
+  background: #E3B23C;
+}
+
+.auth-form {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.auth-form label {
+  display: block;
+  font-weight: 600;
+  margin-top: 0.6rem;
+  margin-bottom: 0.2rem;
+  text-align: left;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(74, 53, 37, 0.3);
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.auth-form .btn-primary {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.form-msg {
+  min-height: 1.2em;
+  text-align: center;
+  font-weight: 600;
+}
+
+.form-msg-error {
+  color: #BC2525;
+}
+
+.profile-card {
+  max-width: 420px;
+  margin: 0 auto 2rem auto;
+  text-align: left;
+}
+
+.profile-card p {
+  text-align: left;
+}
+
+.order-history-list {
+  list-style: none;
+  padding: 0;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.order-history-item {
+  text-align: left;
+  border: 1px solid rgba(74, 53, 37, 0.15);
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 0.6rem;
+}
+
+/* ---------- about.html location grid ---------- */
+
+.location-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.location-grid > div {
+  flex: 1 1 260px;
+}
