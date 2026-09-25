@@ -140,9 +140,9 @@ User flow: **Home → Menu → Cart → Checkout → Confirmation**. The Account
 
 ## Roadmap
 
-1. **Phase 1 — Static frontend** ✅ All pages and the full order flow work in the browser
-2. **Phase 2 — Backend:** Express.js REST API (`/api/menu`, `/api/orders`, `/api/auth/*`, `/api/users/:id/orders`) with JSON-file storage (SQLite as a fallback), hashed passwords, and totals calculated on the server
-3. **Phase 3 — React frontend** connected to the API
+1. **Phase 1: Static frontend** All pages and the full order flow work in the browser
+2. **Phase 2: Backend:** Express.js REST API (`/api/menu`, `/api/orders`, `/api/auth/*`, `/api/users/:id/orders`) with JSON-file storage (SQLite as a fallback), hashed passwords, and totals calculated on the server
+3. **Phase 3: React frontend** connected to the API
 4. **Future:** live payment gateway (GCash / PayMaya), email/SMS notifications, real-time order tracking, admin dashboard
 
 ## Contributors
