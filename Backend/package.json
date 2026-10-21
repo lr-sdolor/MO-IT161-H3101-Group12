@@ -1,0 +1,32 @@
+{
+  "name": "mo-it161-h3101-group12",
+  "version": "1.0.0",
+  "description": "**MO-IT161 Web Systems and Technology · H3101 · Group 12**",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lr-sdolor/MO-IT161-H3101-Group12.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/lr-sdolor/MO-IT161-H3101-Group12/issues"
+  },
+  "homepage": "https://github.com/lr-sdolor/MO-IT161-H3101-Group12#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.8",
+    "express": "^5.3.0",
+    "express-session": "^1.19.0"
+  }
+}
