@@ -26,7 +26,7 @@ const ShawarmHugStore = (function () {
   }
 
   function formatPeso(amount) {
-    return "₱" + Number(amount).toFixed(2);
+    return "₱" + Number(amount || 0).toFixed(2);
   }
 
   /* ---------- cart ---------- */
@@ -78,11 +78,11 @@ const ShawarmHugStore = (function () {
   }
 
   function getCartCount() {
-    return getCart().reduce((sum, line) => sum + line.qty, 0);
+    return getCart().reduce((sum, line) => sum + (line.qty || 0), 0);
   }
 
   function getCartSubtotal() {
-    return getCart().reduce((sum, line) => sum + line.unitPrice * line.qty, 0);
+    return getCart().reduce((sum, line) => sum + ((line.unitPrice || 0) * (line.qty || 0)), 0);
   }
 
   function getDeliveryFee(orderType) {
@@ -101,19 +101,19 @@ const ShawarmHugStore = (function () {
     return "SHW-" + year + "-" + randomPart;
   }
 
-  // details = { custName, custPhone, custEmail, orderType, custAddress, paymentMethod }
   function saveOrder(details) {
     const cart = getCart();
     const subtotal = getCartSubtotal();
     const deliveryFee = getDeliveryFee(details.orderType);
+
     const order = {
-      orderNumber: generateOrderNumber(),
-      items: cart,
-      subtotal: subtotal,
-      deliveryFee: deliveryFee,
-      total: subtotal + deliveryFee,
-      orderStatus: details.paymentMethod === "COD" ? "Confirmed" : "Pending",
-      createdAt: new Date().toISOString(),
+      orderNumber: details.orderNumber || generateOrderNumber(),
+      items: details.items || cart,
+      subtotal: details.subtotal || subtotal,
+      deliveryFee: details.deliveryFee !== undefined ? details.deliveryFee : deliveryFee,
+      total: details.total || (subtotal + deliveryFee),
+      orderStatus: details.orderStatus || (details.paymentMethod === "COD" ? "Confirmed" : "Pending"),
+      createdAt: details.createdAt || new Date().toISOString(),
       ...details,
     };
 
@@ -122,14 +122,16 @@ const ShawarmHugStore = (function () {
     writeJSON(ORDERS_KEY, orders);
     writeJSON("shawarmhug_lastOrder", order);
 
-    // If a customer is logged in, attach this order to their history
+    // If a customer is logged in, attach order to user session
     const currentUser = getCurrentUser();
     if (currentUser) {
       const users = getUsers();
-      const user = users.find((u) => u.email === currentUser.email);
+      const user = users.find((u) => u.email && u.email.toLowerCase() === currentUser.email.toLowerCase());
       if (user) {
         user.orderNumbers = user.orderNumbers || [];
-        user.orderNumbers.push(order.orderNumber);
+        if (!user.orderNumbers.includes(order.orderNumber)) {
+          user.orderNumbers.push(order.orderNumber);
+        }
         writeJSON(USERS_KEY, users);
       }
     }
@@ -142,20 +144,19 @@ const ShawarmHugStore = (function () {
     return readJSON("shawarmhug_lastOrder", null);
   }
 
-  /* ---------- accounts (simplified per design doc section 4.6 / 9) ---------- */
+  /* ---------- accounts & session ---------- */
 
   function getUsers() {
     return readJSON(USERS_KEY, []);
   }
 
   function findUserByEmail(email) {
+    if (!email) return null;
     return getUsers().find(
-      (u) => u.email.toLowerCase() === email.toLowerCase()
-    );
+      (u) => u.email && u.email.toLowerCase() === email.toLowerCase()
+    ) || null;
   }
 
-  // Note: this is a static-site placeholder, not production auth.
-  // Real hashing/session/token management is future scope (design doc, section 9).
   function signUp(user) {
     const users = getUsers();
     if (findUserByEmail(user.email)) {
@@ -188,6 +189,7 @@ const ShawarmHugStore = (function () {
   }
 
   function setCurrentUser(user) {
+    if (!user) return;
     writeJSON(SESSION_KEY, { name: user.name, email: user.email, phone: user.phone });
   }
 
@@ -197,11 +199,18 @@ const ShawarmHugStore = (function () {
 
   function getOrdersForCurrentUser() {
     const currentUser = getCurrentUser();
-    if (!currentUser) return [];
-    const user = findUserByEmail(currentUser.email);
-    if (!user || !user.orderNumbers) return [];
+    if (!currentUser || !currentUser.email) return [];
+
     const allOrders = getOrders();
-    return allOrders.filter((o) => user.orderNumbers.includes(o.orderNumber));
+    const user = findUserByEmail(currentUser.email);
+
+    // Return orders matching user email or registered order numbers
+    return allOrders.filter((o) => {
+      const isEmailMatch = o.email && o.email.toLowerCase() === currentUser.email.toLowerCase();
+      const isCustEmailMatch = o.custEmail && o.custEmail.toLowerCase() === currentUser.email.toLowerCase();
+      const isNumberMatch = user && user.orderNumbers && user.orderNumbers.includes(o.orderNumber);
+      return isEmailMatch || isCustEmailMatch || isNumberMatch;
+    });
   }
 
   return {
@@ -220,6 +229,7 @@ const ShawarmHugStore = (function () {
     signUp,
     logIn,
     logOut,
+    setCurrentUser,
     getCurrentUser,
     getOrdersForCurrentUser,
   };

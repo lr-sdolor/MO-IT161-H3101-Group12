@@ -9,13 +9,13 @@
   <link rel="stylesheet" href="Css/pages.css">
 </head>
 <body>
-  <!--Contains logo and navagation-->
+  <!-- Contains logo and navigation -->
   <header class="navbar">
     <nav>
-    <div class="logo">
-    <img src="images/logo.png" alt="Shawarmhug logo">
-    <h1>ShawarmHug</h1>
-    </div>
+      <div class="logo">
+        <img src="images/logo.png" alt="Shawarmhug logo">
+        <h1>ShawarmHug</h1>
+      </div>
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="menu.html">Menu</a></li>
@@ -23,11 +23,8 @@
         <li><a href="cart.html">Cart <span class="cart-badge" id="cart-badge">0</span></a></li>
       </ul>
       <div class="btns">
-
         <a href="account.html" class="btn" id="nav-account-link">Sign In</a>
-
       </div>
-
     </nav>
   </header>
 
@@ -44,7 +41,7 @@
 
         <div class="checkout-fields">
 
-          <!--Customer information-->
+          <!-- Customer information -->
           <fieldset>
             <legend>Customer Information</legend>
 
@@ -61,7 +58,7 @@
             <span class="field-error" id="err-cust-email"></span>
           </fieldset>
 
-          <!--Order type: delivery or pickup-->
+          <!-- Order type: delivery or pickup -->
           <fieldset>
             <legend>Order Type</legend>
             <div class="radio-group">
@@ -70,7 +67,7 @@
             </div>
           </fieldset>
 
-          <!--Delivery details: shown only when Delivery is selected-->
+          <!-- Delivery details: shown only when Delivery is selected -->
           <fieldset id="delivery-details">
             <legend>Delivery Details</legend>
             <label for="cust-address">Delivery Address</label>
@@ -78,26 +75,26 @@
             <span class="field-error" id="err-cust-address"></span>
           </fieldset>
 
-          <!--Pickup details: shown only when Pickup is selected-->
+          <!-- Pickup details: shown only when Pickup is selected -->
           <fieldset id="pickup-details" hidden>
             <legend>Pickup Location</legend>
             <p>150 Maginhawa St., Sikatuna Village, Diliman, Quezon City, 1101 Metro Manila</p>
             <p>Orders are ready for pickup approximately 20–30 minutes after placing your order.</p>
           </fieldset>
 
-          <!--Payment method-->
+          <!-- Payment method -->
           <fieldset>
             <legend>Payment Method</legend>
             <div class="radio-group">
-              <label><input type="radio" name="paymentMethod" value="COD" id="pay-cod" checked> Cash on Delivery</label>
-              <label><input type="radio" name="paymentMethod" value="Online" id="pay-online"> Online Payment</label>
+              <label><input type="radio" name="paymentMethod" value="Cash on Delivery" id="pay-cod" checked> Cash on Delivery</label>
+              <label><input type="radio" name="paymentMethod" value="Online Payment" id="pay-online"> Online Payment</label>
             </div>
             <span class="field-error" id="err-payment"></span>
           </fieldset>
 
         </div>
 
-        <!--Order summary: read-only recap of the cart-->
+        <!-- Order summary: read-only recap of the cart -->
         <aside class="order-summary">
           <h3>Order Summary</h3>
           <ul id="checkout-items-list" class="checkout-items-list"></ul>
@@ -113,6 +110,10 @@
             <span>Total</span>
             <span id="checkout-total">₱0.00</span>
           </div>
+
+          <!-- Message container for server errors or order status -->
+          <p class="form-msg" id="checkout-msg"></p>
+
           <button type="submit" class="btn-primary" id="place-order-btn">Place Order</button>
         </aside>
 
@@ -120,10 +121,9 @@
     </section>
   </main>
 
-  <!--Footer Section: Copyright info and contact info-->
+  <!-- Footer Section -->
   <footer>
     <p>Contact us: shawarmhug@gmail.com</p>
-
     <p>&copy; 2026 BLESSY Shawarmhug PH</p>
   </footer>
 
