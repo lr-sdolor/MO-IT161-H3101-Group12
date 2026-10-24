@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Blessy",
+    "email": "bless@shawarma.com",
+    "phone": "12345678910",
+    "password": "$2b$10$0mT2/LOAdrLub3TWoJWBH.kg0vWRjC1Txw4IuRg6C35O.5Kow5G9m"
+  },
+  {
+    "name": "Brian",
+    "email": "brian@shawarma.com",
+    "phone": "1245678910",
+    "password": "$2b$10$i5Ro5YkcajYO.Tr6.vlvluB9QRzGExzaj.AEqx75DTRx94DrdQPRa"
+  },
+  {
+    "name": "Brixter",
+    "email": "brix@shawarma.com",
+    "phone": "12345678910",
+    "password": "$2b$10$PPxz0iu0ZB1onXaB1r0lhOpjWP6YzIO88g2xbdmRxKzYlV3rp/4BO"
+  }
+]
