@@ -1,0 +1,101 @@
+[
+  {
+    "orderNumber": "SH-1792836979777",
+    "name": "Brixter",
+    "phone": "12345678910",
+    "email": "brix@shawarma.com",
+    "orderType": "Pickup",
+    "deliveryAddress": "N/A",
+    "custAddress": "N/A",
+    "paymentMethod": "Online Payment",
+    "items": [
+      {
+        "name": "Shawarma Nachos (Beef or Chicken)",
+        "option": "Personal",
+        "unitPrice": 140,
+        "qty": 1
+      },
+      {
+        "name": "Signature Beef or Chicken Shawarma Rice",
+        "option": "Regular Rice",
+        "unitPrice": 99,
+        "qty": 1
+      },
+      {
+        "name": "Signature Beef or Chicken Shawarma Wrap",
+        "option": "Regular",
+        "unitPrice": 85,
+        "qty": 1
+      }
+    ],
+    "subtotal": 324,
+    "deliveryFee": 0,
+    "total": 324,
+    "orderStatus": "Pending",
+    "createdAt": "2026-10-24T10:16:19.777Z"
+  },
+  {
+    "orderNumber": "SH-1792836680278",
+    "name": "Brixter",
+    "phone": "12345678910",
+    "email": "brix@shawarma.com",
+    "orderType": "Delivery",
+    "deliveryAddress": "131231231",
+    "custAddress": "131231231",
+    "paymentMethod": "Cash on Delivery",
+    "items": [
+      {
+        "name": "Signature Beef or Chicken Shawarma Wrap",
+        "option": "Regular",
+        "unitPrice": 85,
+        "qty": 1
+      },
+      {
+        "name": "Signature Beef or Chicken Shawarma Rice",
+        "option": "Regular Rice",
+        "unitPrice": 99,
+        "qty": 7
+      },
+      {
+        "name": "Shawarma Nachos (Beef or Chicken)",
+        "option": "Personal",
+        "unitPrice": 140,
+        "qty": 5
+      }
+    ],
+    "subtotal": 1478,
+    "deliveryFee": 49,
+    "total": 1527,
+    "orderStatus": "Pending",
+    "createdAt": "2026-10-24T10:11:20.278Z"
+  },
+  {
+    "orderNumber": "SH-1792836570674",
+    "name": "Blessy",
+    "phone": "12345678910",
+    "email": "bless@shawarma.com",
+    "orderType": "Delivery",
+    "deliveryAddress": "toledo",
+    "custAddress": "toledo",
+    "paymentMethod": "Cash on Delivery",
+    "items": [
+      {
+        "name": "Signature Beef or Chicken Shawarma Wrap",
+        "option": "Regular",
+        "unitPrice": 85,
+        "qty": 2
+      },
+      {
+        "name": "Signature Beef or Chicken Shawarma Rice",
+        "option": "Regular Rice",
+        "unitPrice": 99,
+        "qty": 1
+      }
+    ],
+    "subtotal": 269,
+    "deliveryFee": 49,
+    "total": 318,
+    "orderStatus": "Pending",
+    "createdAt": "2026-10-24T10:09:30.674Z"
+  }
+]
