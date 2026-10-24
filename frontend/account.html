@@ -9,13 +9,13 @@
   <link rel="stylesheet" href="Css/pages.css">
 </head>
 <body>
-  <!--Contains logo and navagation-->
+  <!--Contains logo and navigation-->
   <header class="navbar">
     <nav>
-    <div class="logo">
-    <img src="images/logo.png" alt="Shawarmhug logo">
-    <h1>ShawarmHug</h1>
-    </div>
+      <div class="logo">
+        <img src="images/logo.png" alt="Shawarmhug logo">
+        <h1>ShawarmHug</h1>
+      </div>
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="menu.html">Menu</a></li>
@@ -23,11 +23,8 @@
         <li><a href="cart.html">Cart <span class="cart-badge" id="cart-badge">0</span></a></li>
       </ul>
       <div class="btns">
-
         <a href="account.html" class="btn active-link" id="nav-account-link">Sign In</a>
-
       </div>
-
     </nav>
   </header>
 
@@ -41,35 +38,34 @@
         <button class="tab-btn" id="tab-signup-btn" data-tab="signup">Sign Up</button>
       </div>
 
-      <form id="login-form" class="auth-form">
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form" novalidate>
         <label for="login-email">Email</label>
-        <input type="email" id="login-email" name="loginEmail" required>
-        <span class="field-error" id="err-login-email"></span>
+        <input type="email" id="login-email" name="loginEmail">
 
         <label for="login-password">Password</label>
-        <input type="password" id="login-password" name="loginPassword" required>
-        <span class="field-error" id="err-login-password"></span>
+        <input type="password" id="login-password" name="loginPassword">
 
+        <!-- Server validation error/success messages render here -->
         <p class="form-msg" id="login-msg"></p>
         <button type="submit" class="btn-primary">Log In</button>
       </form>
 
-      <form id="signup-form" class="auth-form" hidden>
+      <!-- Sign Up Form -->
+      <form id="signup-form" class="auth-form" hidden novalidate>
         <label for="signup-name">Full Name</label>
-        <input type="text" id="signup-name" name="signupName" required>
-        <span class="field-error" id="err-signup-name"></span>
+        <input type="text" id="signup-name" name="signupName">
 
         <label for="signup-email">Email</label>
-        <input type="email" id="signup-email" name="signupEmail" required>
-        <span class="field-error" id="err-signup-email"></span>
+        <input type="email" id="signup-email" name="signupEmail">
 
         <label for="signup-phone">Contact Number</label>
         <input type="tel" id="signup-phone" name="signupPhone">
 
         <label for="signup-password">Password</label>
-        <input type="password" id="signup-password" name="signupPassword" required minlength="6">
-        <span class="field-error" id="err-signup-password"></span>
+        <input type="password" id="signup-password" name="signupPassword">
 
+        <!-- Server validation error/success messages render here -->
         <p class="form-msg" id="signup-msg"></p>
         <button type="submit" class="btn-primary">Create Account</button>
       </form>
@@ -100,7 +96,6 @@
   <!--Footer Section: Copyright info and contact info-->
   <footer>
     <p>Contact us: shawarmhug@gmail.com</p>
-
     <p>&copy; 2026 BLESSY Shawarmhug PH</p>
   </footer>
 
