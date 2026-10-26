@@ -1,3 +1,9 @@
+/* Make the HTML `hidden` attribute always win over display rules such as
+   .detail-row { display: flex }, so JavaScript can hide any element. */
+[hidden] {
+  display: none !important;
+}
+
 /* ---------- shared bits ---------- */
 
 .btn-primary {
