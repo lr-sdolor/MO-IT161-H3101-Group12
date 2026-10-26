@@ -1,9 +1,17 @@
 const ShawarmHugStore = (function () {
   const CART_KEY = "shawarmhug_cart";
-  const ORDERS_KEY = "shawarmhug_orders";
-  const USERS_KEY = "shawarmhug_users";
+  const LAST_ORDER_KEY = "shawarmhug_lastOrder";
   const SESSION_KEY = "shawarmhug_currentUser";
   const DELIVERY_FEE = 49;
+
+  // Where the Express server is.
+  // When the site is opened through the server itself (npm start → http://localhost:3000)
+  // we use the same address. Otherwise (Live Server, opening the file directly)
+  // we call the server on port 3000.
+  const API_BASE_URL =
+    location.protocol.startsWith("http") && location.port === "3000"
+      ? ""
+      : "http://localhost:3000";
 
   /* ---------- small helpers ---------- */
 
@@ -29,7 +37,40 @@ const ShawarmHugStore = (function () {
     return "₱" + Number(amount || 0).toFixed(2);
   }
 
-  /* ---------- cart ---------- */
+  /* ---------- talking to the backend ---------- */
+
+  // Sends a request to the Express API and always resolves to
+  // { ok, status, data } so pages can show a clear message.
+  async function api(path, options) {
+    const opts = options || {};
+    let response;
+    try {
+      response = await fetch(API_BASE_URL + path, {
+        method: opts.method || "GET",
+        headers: opts.body ? { "Content-Type": "application/json" } : undefined,
+        body: opts.body ? JSON.stringify(opts.body) : undefined,
+      });
+    } catch (err) {
+      return {
+        ok: false,
+        status: 0,
+        data: {
+          message:
+            "Can't reach the ShawarmHug server. Please check that it is running and try again.",
+        },
+      };
+    }
+
+    let data = {};
+    try {
+      data = await response.json();
+    } catch (err) {
+      data = { message: "The server sent an unexpected response." };
+    }
+    return { ok: response.ok && data.ok !== false, status: response.status, data: data };
+  }
+
+  /* ---------- cart (kept in the browser until checkout) ---------- */
 
   function getCart() {
     return readJSON(CART_KEY, []);
@@ -85,109 +126,60 @@ const ShawarmHugStore = (function () {
     return getCart().reduce((sum, line) => sum + ((line.unitPrice || 0) * (line.qty || 0)), 0);
   }
 
+  // Shown as a preview only; the server calculates the real fee and total
   function getDeliveryFee(orderType) {
     return orderType === "Pickup" ? 0 : DELIVERY_FEE;
   }
 
-  /* ---------- orders ---------- */
+  /* ---------- orders (stored on the server) ---------- */
 
-  function getOrders() {
-    return readJSON(ORDERS_KEY, []);
-  }
-
-  function generateOrderNumber() {
-    const year = new Date().getFullYear();
-    const randomPart = Math.floor(10000 + Math.random() * 90000);
-    return "SHW-" + year + "-" + randomPart;
-  }
-
-  function saveOrder(details) {
-    const cart = getCart();
-    const subtotal = getCartSubtotal();
-    const deliveryFee = getDeliveryFee(details.orderType);
-
-    const order = {
-      orderNumber: details.orderNumber || generateOrderNumber(),
-      items: details.items || cart,
-      subtotal: details.subtotal || subtotal,
-      deliveryFee: details.deliveryFee !== undefined ? details.deliveryFee : deliveryFee,
-      total: details.total || (subtotal + deliveryFee),
-      orderStatus: details.orderStatus || (details.paymentMethod === "COD" ? "Confirmed" : "Pending"),
-      createdAt: details.createdAt || new Date().toISOString(),
-      ...details,
+  // Sends the order to POST /orders. The server checks it, recalculates the
+  // totals and returns the saved order with its order number.
+  async function placeOrder(details) {
+    const payload = {
+      name: details.name,
+      phone: details.phone,
+      email: details.email,
+      orderType: details.orderType,
+      deliveryAddress: details.deliveryAddress,
+      paymentMethod: details.paymentMethod,
+      items: getCart().map((line) => ({ name: line.name, option: line.option, qty: line.qty })),
     };
 
-    const orders = getOrders();
-    orders.unshift(order);
-    writeJSON(ORDERS_KEY, orders);
-    writeJSON("shawarmhug_lastOrder", order);
-
-    // If a customer is logged in, attach order to user session
-    const currentUser = getCurrentUser();
-    if (currentUser) {
-      const users = getUsers();
-      const user = users.find((u) => u.email && u.email.toLowerCase() === currentUser.email.toLowerCase());
-      if (user) {
-        user.orderNumbers = user.orderNumbers || [];
-        if (!user.orderNumbers.includes(order.orderNumber)) {
-          user.orderNumbers.push(order.orderNumber);
-        }
-        writeJSON(USERS_KEY, users);
-      }
+    const result = await api("/orders", { method: "POST", body: payload });
+    if (result.ok) {
+      // Keep a copy so the confirmation page can show it, then empty the cart
+      writeJSON(LAST_ORDER_KEY, result.data.order);
+      clearCart();
     }
-
-    clearCart();
-    return order;
+    return result;
   }
 
   function getLastOrder() {
-    return readJSON("shawarmhug_lastOrder", null);
+    return readJSON(LAST_ORDER_KEY, null);
   }
 
   /* ---------- accounts & session ---------- */
 
-  function getUsers() {
-    return readJSON(USERS_KEY, []);
-  }
-
-  function findUserByEmail(email) {
-    if (!email) return null;
-    return getUsers().find(
-      (u) => u.email && u.email.toLowerCase() === email.toLowerCase()
-    ) || null;
-  }
-
   function signUp(user) {
-    const users = getUsers();
-    if (findUserByEmail(user.email)) {
-      return { ok: false, message: "An account with that email already exists." };
-    }
-    const newUser = {
-      name: user.name,
-      email: user.email,
-      phone: user.phone || "",
-      password: user.password,
-      orderNumbers: [],
-    };
-    users.push(newUser);
-    writeJSON(USERS_KEY, users);
-    setCurrentUser(newUser);
-    return { ok: true, user: newUser };
+    return api("/users", { method: "POST", body: user });
   }
 
   function logIn(email, password) {
-    const user = findUserByEmail(email);
-    if (!user || user.password !== password) {
-      return { ok: false, message: "Incorrect email or password." };
-    }
-    setCurrentUser(user);
-    return { ok: true, user: user };
+    return api("/users/login", { method: "POST", body: { email: email, password: password } });
+  }
+
+  async function getOrdersForCurrentUser() {
+    const currentUser = getCurrentUser();
+    if (!currentUser || !currentUser.email) return { ok: true, data: { orders: [] } };
+    return api("/users/" + encodeURIComponent(currentUser.email) + "/orders");
   }
 
   function logOut() {
     localStorage.removeItem(SESSION_KEY);
   }
 
+  // Only name, email and phone are kept in the browser (never the password)
   function setCurrentUser(user) {
     if (!user) return;
     writeJSON(SESSION_KEY, { name: user.name, email: user.email, phone: user.phone });
@@ -197,23 +189,8 @@ const ShawarmHugStore = (function () {
     return readJSON(SESSION_KEY, null);
   }
 
-  function getOrdersForCurrentUser() {
-    const currentUser = getCurrentUser();
-    if (!currentUser || !currentUser.email) return [];
-
-    const allOrders = getOrders();
-    const user = findUserByEmail(currentUser.email);
-
-    // Return orders matching user email or registered order numbers
-    return allOrders.filter((o) => {
-      const isEmailMatch = o.email && o.email.toLowerCase() === currentUser.email.toLowerCase();
-      const isCustEmailMatch = o.custEmail && o.custEmail.toLowerCase() === currentUser.email.toLowerCase();
-      const isNumberMatch = user && user.orderNumbers && user.orderNumbers.includes(o.orderNumber);
-      return isEmailMatch || isCustEmailMatch || isNumberMatch;
-    });
-  }
-
   return {
+    API_BASE_URL,
     formatPeso,
     getCart,
     addToCart,
@@ -223,8 +200,7 @@ const ShawarmHugStore = (function () {
     getCartCount,
     getCartSubtotal,
     getDeliveryFee,
-    getOrders,
-    saveOrder,
+    placeOrder,
     getLastOrder,
     signUp,
     logIn,
