@@ -1,5 +1,3 @@
-const API_BASE_URL = "http://127.0.0.1:3000";
-
 document.addEventListener("DOMContentLoaded", function () {
   const cart = typeof ShawarmHugStore !== "undefined" && ShawarmHugStore.getCart ? ShawarmHugStore.getCart() : [];
 
@@ -150,72 +148,79 @@ function validateForm() {
   return isValid;
 }
 
+// Which error <span> shows each field error sent back by the server
+const SERVER_FIELD_ERRORS = {
+  name: "err-cust-name",
+  phone: "err-cust-phone",
+  email: "err-cust-email",
+  deliveryAddress: "err-cust-address",
+  paymentMethod: "err-payment",
+};
+
+function showCheckoutMessage(message) {
+  const globalMsg = document.getElementById("checkout-msg");
+  if (!globalMsg) return;
+  globalMsg.textContent = message;
+  globalMsg.classList.add("form-msg-error");
+}
+
 function wireFormSubmit() {
   const form = document.getElementById("checkout-form");
   if (!form) return;
+  const submitBtn = document.getElementById("place-order-btn") || form.querySelector('button[type="submit"]');
+  let submitting = false;
 
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
+    if (submitting) return; // ignore double clicks while the order is being sent
     if (!validateForm()) return;
 
-    const submitBtn = form.querySelector('button[type="submit"]');
-    if (submitBtn) submitBtn.disabled = true;
+    submitting = true;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Placing order…";
+    }
 
     const orderType = currentOrderType();
-    const cart = (typeof ShawarmHugStore !== "undefined" && ShawarmHugStore.getCart) ? ShawarmHugStore.getCart() : [];
-    const subtotal = (typeof ShawarmHugStore !== "undefined" && ShawarmHugStore.getCartSubtotal) ? ShawarmHugStore.getCartSubtotal() : 0;
-    const deliveryFee = (typeof ShawarmHugStore !== "undefined" && ShawarmHugStore.getDeliveryFee) ? ShawarmHugStore.getDeliveryFee(orderType) : 0;
-    const total = subtotal + deliveryFee;
-
     const paymentMethodEl = document.querySelector('input[name="paymentMethod"]:checked');
-    const custAddress = orderType === "Delivery" ? (document.getElementById("cust-address")?.value.trim() || "") : "";
 
-    const orderPayload = {
-      name: document.getElementById("cust-name")?.value.trim() || "",
-      phone: document.getElementById("cust-phone")?.value.trim() || "",
-      email: document.getElementById("cust-email")?.value.trim() || "",
-      custName: document.getElementById("cust-name")?.value.trim() || "",
-      custPhone: document.getElementById("cust-phone")?.value.trim() || "",
-      custEmail: document.getElementById("cust-email")?.value.trim() || "",
+    const result = await ShawarmHugStore.placeOrder({
+      name: document.getElementById("cust-name").value.trim(),
+      phone: document.getElementById("cust-phone").value.trim(),
+      email: document.getElementById("cust-email").value.trim(),
       orderType: orderType,
-      deliveryAddress: custAddress,
-      custAddress: custAddress,
-      paymentMethod: paymentMethodEl ? paymentMethodEl.value : "COD",
-      items: cart,
-      subtotal: subtotal,
-      deliveryFee: deliveryFee,
-      total: total
-    };
+      deliveryAddress: orderType === "Delivery" ? document.getElementById("cust-address").value.trim() : "",
+      paymentMethod: paymentMethodEl ? paymentMethodEl.value : "",
+    });
 
-    let savedOrder = null;
+    if (result.ok) {
+      window.location.href = "confirmation.html";
+      return;
+    }
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/orders`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderPayload)
-      });
-
-      const result = await response.json();
-
-      if (response.ok && result.ok) {
-        savedOrder = result.order;
+    // Order was NOT saved: show the server's message and let the customer try again
+    const fieldErrors = (result.data && result.data.errors) || {};
+    let shownInline = false;
+    Object.keys(fieldErrors).forEach((field) => {
+      if (SERVER_FIELD_ERRORS[field]) {
+        setFieldError(SERVER_FIELD_ERRORS[field], fieldErrors[field]);
+        shownInline = true;
       }
-    } catch (err) {
-      console.warn("Server offline or unreachable, proceeding with local store fallback:", err);
-    }
+    });
 
-    // Save order locally for confirmation page and user order history
-    if (typeof ShawarmHugStore !== "undefined" && typeof ShawarmHugStore.saveOrder === "function") {
-      ShawarmHugStore.saveOrder(savedOrder || orderPayload);
-    }
+    const message = (result.data && result.data.message) || "Your order could not be placed. Please try again.";
+    showCheckoutMessage(
+      result.status === 0
+        ? message + " Your order has not been placed yet."
+        : shownInline && !fieldErrors.items
+          ? "Please fix the highlighted fields."
+          : message
+    );
 
-    // Clear cart
-    if (typeof ShawarmHugStore !== "undefined" && typeof ShawarmHugStore.clearCart === "function") {
-      ShawarmHugStore.clearCart();
+    submitting = false;
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Place Order";
     }
-
-    // Redirect to confirmation page
-    window.location.href = "confirmation.html";
   });
 }
