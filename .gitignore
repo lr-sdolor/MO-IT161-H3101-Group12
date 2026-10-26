@@ -1,0 +1,10 @@
+# Dependencies (run `npm install` inside Backend/ to get them)
+node_modules/
+
+# Temporary files written while saving JSON data
+*.tmp
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.vscode/
