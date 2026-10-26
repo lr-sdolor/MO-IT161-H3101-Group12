@@ -1,10 +1,10 @@
-const API_BASE_URL = "http://127.0.0.1:3000";
-
 document.addEventListener("DOMContentLoaded", function () {
-  // Update nav account link on page load based on current session
+  // account.js is also loaded on other pages for the nav link; only run the
+  // page logic when the account sections exist
   updateAccountLink();
+  if (!document.getElementById("auth-section")) return;
 
-  const user = typeof ShawarmHugStore !== "undefined" && ShawarmHugStore.getCurrentUser ? ShawarmHugStore.getCurrentUser() : null;
+  const user = ShawarmHugStore.getCurrentUser();
   if (user) {
     showProfileView(user);
   } else {
@@ -16,19 +16,13 @@ document.addEventListener("DOMContentLoaded", function () {
   wireLoginForm();
 });
 
-// Helper function to update the top navigation account link text dynamically
+// Shows the first name in the navigation bar when logged in
 function updateAccountLink() {
   const accountLink = document.getElementById("nav-account-link");
   if (!accountLink) return;
 
-  const user = typeof ShawarmHugStore !== "undefined" && ShawarmHugStore.getCurrentUser ? ShawarmHugStore.getCurrentUser() : null;
-  if (user && user.name) {
-    // Show first name in navigation bar when logged in
-    accountLink.textContent = user.name.split(" ")[0];
-  } else {
-    // Default label when logged out
-    accountLink.textContent = "Sign In";
-  }
+  const user = ShawarmHugStore.getCurrentUser();
+  accountLink.textContent = user && user.name ? user.name.split(" ")[0] : "Sign In";
 }
 
 function wireTabs() {
@@ -36,22 +30,37 @@ function wireTabs() {
   const signupTabBtn = document.getElementById("tab-signup-btn");
   const loginForm = document.getElementById("login-form");
   const signupForm = document.getElementById("signup-form");
+  if (!loginTabBtn || !signupTabBtn || !loginForm || !signupForm) return;
 
-  if (loginTabBtn && signupTabBtn && loginForm && signupForm) {
-    loginTabBtn.addEventListener("click", function () {
-      loginTabBtn.classList.add("active");
-      signupTabBtn.classList.remove("active");
-      loginForm.hidden = false;
-      signupForm.hidden = true;
-    });
+  loginTabBtn.addEventListener("click", function () {
+    loginTabBtn.classList.add("active");
+    signupTabBtn.classList.remove("active");
+    loginForm.hidden = false;
+    signupForm.hidden = true;
+  });
 
-    signupTabBtn.addEventListener("click", function () {
-      signupTabBtn.classList.add("active");
-      loginTabBtn.classList.remove("active");
-      signupForm.hidden = false;
-      loginForm.hidden = true;
-    });
-  }
+  signupTabBtn.addEventListener("click", function () {
+    signupTabBtn.classList.add("active");
+    loginTabBtn.classList.remove("active");
+    signupForm.hidden = false;
+    loginForm.hidden = true;
+  });
+}
+
+function setFormMessage(msgEl, text, isError) {
+  if (!msgEl) return;
+  msgEl.textContent = text;
+  msgEl.classList.toggle("form-msg-error", !!isError);
+}
+
+// Disables the submit button while a request is running so the form
+// cannot be sent twice
+function setBusy(form, busy, busyLabel) {
+  const btn = form.querySelector('button[type="submit"]');
+  if (!btn) return;
+  if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+  btn.disabled = busy;
+  btn.textContent = busy ? busyLabel : btn.dataset.label;
 }
 
 function wireSignupForm() {
@@ -61,48 +70,32 @@ function wireSignupForm() {
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    const name = document.getElementById("signup-name")?.value || "";
-    const email = document.getElementById("signup-email")?.value || "";
-    const phone = document.getElementById("signup-phone")?.value || "";
-    const password = document.getElementById("signup-password")?.value || "";
+    const name = document.getElementById("signup-name").value.trim();
+    const email = document.getElementById("signup-email").value.trim();
+    const phone = document.getElementById("signup-phone").value.trim();
+    const password = document.getElementById("signup-password").value;
     const msg = document.getElementById("signup-msg");
 
-    if (msg) {
-      msg.textContent = "";
-      msg.classList.remove("form-msg-error");
+    // Quick checks in the browser first (the server checks again)
+    if (!name) return setFormMessage(msg, "Name is required.", true);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setFormMessage(msg, "Enter a valid email address.", true);
+    if (phone && !/^[0-9+()\-\s]{7,20}$/.test(phone)) return setFormMessage(msg, "Enter a valid contact number.", true);
+    if (password.length < 6) return setFormMessage(msg, "Password must be at least 6 characters.", true);
+
+    setFormMessage(msg, "", false);
+    setBusy(form, true, "Creating account…");
+    const result = await ShawarmHugStore.signUp({ name, email, phone, password });
+    setBusy(form, false);
+
+    if (!result.ok) {
+      setFormMessage(msg, result.data.message || "Registration failed. Please try again.", true);
+      return;
     }
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/users`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone, password }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        if (msg) {
-          msg.textContent = result.message || "Registration failed.";
-          msg.classList.add("form-msg-error");
-        }
-        return;
-      }
-
-      const currentUser = { name: name.trim(), email: email.trim(), phone: phone.trim() };
-      if (typeof ShawarmHugStore !== "undefined" && ShawarmHugStore.setCurrentUser) {
-        ShawarmHugStore.setCurrentUser(currentUser);
-      }
-
-      updateAccountLink();
-      showProfileView(currentUser);
-    } catch (err) {
-      console.error("Signup error:", err);
-      if (msg) {
-        msg.textContent = "Unable to connect to the server. Please try again.";
-        msg.classList.add("form-msg-error");
-      }
-    }
+    form.reset();
+    ShawarmHugStore.setCurrentUser(result.data.user);
+    updateAccountLink();
+    showProfileView(result.data.user);
   });
 }
 
@@ -113,82 +106,62 @@ function wireLoginForm() {
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    const email = document.getElementById("login-email")?.value || "";
-    const password = document.getElementById("login-password")?.value || "";
+    const email = document.getElementById("login-email").value.trim();
+    const password = document.getElementById("login-password").value;
     const msg = document.getElementById("login-msg");
 
-    if (msg) {
-      msg.textContent = "";
-      msg.classList.remove("form-msg-error");
+    if (!email || !password) return setFormMessage(msg, "Enter your email and password.", true);
+
+    setFormMessage(msg, "", false);
+    setBusy(form, true, "Logging in…");
+    const result = await ShawarmHugStore.logIn(email, password);
+    setBusy(form, false);
+
+    if (!result.ok) {
+      setFormMessage(msg, result.data.message || "Incorrect email or password.", true);
+      return;
     }
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/users/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        if (msg) {
-          msg.textContent = result.message || "Invalid credentials.";
-          msg.classList.add("form-msg-error");
-        }
-        return;
-      }
-
-      if (typeof ShawarmHugStore !== "undefined" && ShawarmHugStore.setCurrentUser) {
-        ShawarmHugStore.setCurrentUser(result.user);
-      }
-
-      updateAccountLink();
-      showProfileView(result.user);
-    } catch (err) {
-      console.error("Login execution error:", err);
-      if (msg) {
-        msg.textContent = "Unable to connect to the server. Please try again.";
-        msg.classList.add("form-msg-error");
-      }
-    }
+    form.reset();
+    ShawarmHugStore.setCurrentUser(result.data.user);
+    updateAccountLink();
+    showProfileView(result.data.user);
   });
 }
 
 function showAuthView() {
   const authSection = document.getElementById("auth-section");
   const profileSection = document.getElementById("profile-section");
-
   if (authSection) authSection.hidden = false;
   if (profileSection) profileSection.hidden = true;
+
+  // Always come back to the Log In tab (e.g. after logging out)
+  const loginTabBtn = document.getElementById("tab-login-btn");
+  if (loginTabBtn) loginTabBtn.click();
 }
 
 function showProfileView(user) {
   const authSection = document.getElementById("auth-section");
   const profileSection = document.getElementById("profile-section");
-
   if (authSection) authSection.hidden = true;
   if (profileSection) profileSection.hidden = false;
 
-  const profileName = document.getElementById("profile-name");
-  const profileFullName = document.getElementById("profile-full-name");
-  const profileEmail = document.getElementById("profile-email");
-  const profilePhone = document.getElementById("profile-phone");
-
-  if (profileName) profileName.textContent = user.name ? user.name.split(" ")[0] : "";
-  if (profileFullName) profileFullName.textContent = user.name || "";
-  if (profileEmail) profileEmail.textContent = user.email || "";
-  if (profilePhone) profilePhone.textContent = user.phone || "—";
+  const setTxt = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  };
+  setTxt("profile-name", user.name ? user.name.split(" ")[0] : "");
+  setTxt("profile-full-name", user.name || "");
+  setTxt("profile-email", user.email || "");
+  setTxt("profile-phone", user.phone || "—");
 
   const logoutBtn = document.getElementById("logout-btn");
   if (logoutBtn) {
+    // Replace the button so the click handler is only attached once
     const freshLogoutBtn = logoutBtn.cloneNode(true);
     logoutBtn.replaceWith(freshLogoutBtn);
-
     freshLogoutBtn.addEventListener("click", function () {
-      if (typeof ShawarmHugStore !== "undefined" && ShawarmHugStore.logOut) {
-        ShawarmHugStore.logOut();
-      }
+      ShawarmHugStore.logOut();
       updateAccountLink();
       showAuthView();
     });
@@ -197,36 +170,48 @@ function showProfileView(user) {
   renderOrderHistory();
 }
 
-function renderOrderHistory() {
+// Loads the logged-in customer's orders from the server (GET /users/:email/orders)
+async function renderOrderHistory() {
   const list = document.getElementById("order-history-list");
   const emptyMsg = document.getElementById("order-history-empty");
-
   if (!list || !emptyMsg) return;
 
-  const orders = (typeof ShawarmHugStore !== "undefined" && ShawarmHugStore.getOrdersForCurrentUser)
-    ? ShawarmHugStore.getOrdersForCurrentUser()
-    : [];
+  list.innerHTML = "<li class=\"order-history-item\">Loading your orders…</li>";
+  emptyMsg.hidden = true;
 
+  const result = await ShawarmHugStore.getOrdersForCurrentUser();
   list.innerHTML = "";
 
-  if (!orders || orders.length === 0) {
+  if (!result.ok) {
+    const li = document.createElement("li");
+    li.className = "order-history-item form-msg-error";
+    li.textContent = result.data.message || "Could not load your order history.";
+    list.appendChild(li);
+    return;
+  }
+
+  const orders = result.data.orders || [];
+  if (orders.length === 0) {
     emptyMsg.hidden = false;
     return;
   }
-  emptyMsg.hidden = true;
 
   orders.forEach((order) => {
     const li = document.createElement("li");
     li.className = "order-history-item";
-    const formattedTotal = (typeof ShawarmHugStore !== "undefined" && ShawarmHugStore.formatPeso) 
-      ? ShawarmHugStore.formatPeso(order.total) 
-      : "₱" + order.total;
 
-    li.innerHTML =
-      "<strong>" + (order.orderNumber || "Order") + "</strong> — " + (order.orderStatus || "Pending") +
-      "<br>" + new Date(order.createdAt || Date.now()).toLocaleDateString() +
-      " · " + formattedTotal;
-
+    const title = document.createElement("strong");
+    title.textContent = order.orderNumber;
+    li.appendChild(title);
+    li.appendChild(document.createTextNode(" — " + (order.orderStatus || "Pending")));
+    li.appendChild(document.createElement("br"));
+    li.appendChild(
+      document.createTextNode(
+        new Date(order.createdAt).toLocaleDateString() +
+          " · " + order.orderType +
+          " · " + ShawarmHugStore.formatPeso(order.total)
+      )
+    );
     list.appendChild(li);
   });
 }
